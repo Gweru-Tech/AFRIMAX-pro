@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful - Ladybug AI</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .success-container {
+            background: white;
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 500px;
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: #28a745;
+            animation: scaleIn 0.5s ease-out;
+        }
+        
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="logo">🐞</div>
+        <div class="success-icon">✓</div>
+        <h2 class="mt-4">Payment Successful!</h2>
+        <p class="text-muted mt-3">Thank you for upgrading to Ladybug AI Premium!</p>
+        <div class="alert alert-success mt-4">
+            <strong>Premium Benefits Activated:</strong><br>
+            ✨ 10 AI requests per day<br>
+            🚀 Valid for 30 days<br>
+            💎 Access to all features
+        </div>
+        <a href="/" class="btn btn-primary btn-lg mt-3">
+            Start Using Ladybug AI
+        </a>
+    </div>
+</body>
+</html>
