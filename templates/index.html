@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐞 Ladybug AI - Your Intelligent Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --ladybug-red: #dc3545;
+            --ladybug-black: #212529;
+            --ladybug-light: #f8f9fa;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .logo {
+            font-size: 3rem;
+            text-align: center;
+            margin: 20px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .auth-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        
+        .chat-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            display: none;
+            overflow: hidden;
+        }
+        
+        .chat-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+        }
+        
+        .mode-selector {
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: #f8f9fa;
+            flex-wrap: wrap;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 10px;
+            border: 2px solid #dee2e6;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-btn:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: #667eea;
+        }
+        
+        .chat-messages {
+            height: 500px;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            animation: slideIn 0.3s;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .message.user {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            margin-left: auto;
+        }
+        
+        .message.assistant {
+            background: white;
+            border: 2px solid #dee2e6;
+        }
+        
+        .chat-input-container {
+            padding: 20px;
+            background: white;
+            border-top: 2px solid #dee2e6;
+        }
+        
+        .premium-badge {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+        
+        .usage-indicator {
+            text-align: center;
+            padding: 10px;
+            background: #e7f3ff;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+        
+        pre {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 10px;
+            overflow-x: auto;
+        }
+        
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="logo">🐞</div>
+        <h1 class="text-center text-white mb-4">Ladybug AI</h1>
+        <p class="text-center text-white mb-4">Your intelligent assistant for coding, research, design & more</p>
+        
+        <!-- Auth Container -->
+        <div id="authContainer" class="auth-container">
+            <h3 class="text-center mb-4">Welcome</h3>
+            <div class="mb-3">
+                <input type="email" id="email" class="form-control" placeholder="Email">
+            </div>
+            <div class="mb-3">
+                <input type="password" id="password" class="form-control" placeholder="Password">
+            </div>
+            <button onclick="login()" class="btn btn-primary w-100 mb-2">Login</button>
+            <button onclick="register()" class="btn btn-outline-primary w-100">Register</button>
+        </div>
+        
+        <!-- Chat Container -->
+        <div id="chatContainer" class="chat-container">
+            <div class="chat-header">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h4 class="mb-0">Ladybug AI</h4>
+                        <small id="userEmail"></small>
+                    </div>
+                    <div>
+                        <span id="premiumBadge" class="premium-badge" style="display:none;">PREMIUM</span>
+                        <button onclick="logout()" class="btn btn-light btn-sm ms-2">Logout</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="usage-indicator" id="usageIndicator">
+                Loading...
+            </div>
+            
+            <div class="mode-selector">
+                <button class="mode-btn active" data-mode="general" onclick="selectMode('general')">
+                    <i class="fas fa-comments"></i><br>General
+                </button>
+                <button class="mode-btn" data-mode="code" onclick="selectMode('code')">
+                    <i class="fas fa-code"></i><br>Code
+                </button>
+                <button class="mode-btn" data-mode="research" onclick="selectMode('research')">
+                    <i class="fas fa-search"></i><br>Research
+                </button>
+                <button class="mode-btn" data-mode="video" onclick="selectMode('video')">
+                    <i class="fas fa-video"></i><br>Video
+                </button>
+                <button class="mode-btn" data-mode="logo" onclick="selectMode('logo')">
+                    <i class="fas fa-palette"></i><br>Logo
+                </button>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="text-center text-muted">
+                    <i class="fas fa-robot fa-3x mb-3"></i>
+                    <p>Hello! I'm Ladybug AI. How can I help you today?</p>
+                </div>
+            </div>
+            
+            <div class="chat-input-container">
+                <div class="input-group">
+                    <textarea id="messageInput" class="form-control" rows="2" placeholder="Type your message..."></textarea>
+                    <button onclick="sendMessage()" class="btn btn-primary" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="mt-2 text-center">
+                    <button onclick="showUpgrade()" class="btn btn-sm btn-outline-success" id="upgradeBtn" style="display:none;">
+                        <i class="fas fa-star"></i> Upgrade to Premium - $5/month
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'general';
+        let conversationId = null;
+        let userStatus = null;
+
+        // Check if already logged in
+        fetch('/status')
+            .then(r => r.json())
+            .then(data => {
+                if (data.user) {
+                    showChat(data);
+                }
+            })
+            .catch(() => {});
+
+        async function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const response = await fetch('/login', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email, password})
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                await loadStatus();
+                showChat(userStatus);
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function register() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({email, password})
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                await loadStatus();
+                showChat(userStatus);
+            } else {
+                alert(data.error);
+            }
+        }
+
+        async function logout() {
+            await fetch('/logout', {method: 'POST'});
+            location.reload();
+        }
+
+        async function loadStatus() {
+            const response = await fetch('/status');
+            userStatus = await response.json();
+            updateUsageIndicator();
+        }
+
+        function showChat(data) {
+            document.getElementById('authContainer').style.display = 'none';
+            document.getElementById('chatContainer').style.display = 'block';
+            document.getElementById('userEmail').textContent = data.user.email;
+            
+            if (data.user.is_premium) {
+                document.getElementById('premiumBadge').style.display = 'inline-block';
+                document.getElementById('upgradeBtn').style.display = 'none';
+            } else {
+                document.getElementById('upgradeBtn').style.display = 'inline-block';
+            }
+            
+            updateUsageIndicator();
+        }
+
+        function updateUsageIndicator() {
+            if (!userStatus) return;
+            
+            const indicator = document.getElementById('usageIndicator');
+            const {usage} = userStatus;
+            indicator.innerHTML = `
+                <strong>${usage.remaining} requests remaining today</strong>
+                ($${usage.today}/$$ {usage.limit} used)
+            `;
+        }
+
+        function selectMode(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.mode-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+            conversationId = null; // Start new conversation on mode change
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessage('user', message);
+            input.value = '';
+            
+            // Disable send button
+            const sendBtn = document.getElementById('sendBtn');
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+            
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        message,
+                        mode: currentMode,
+                        conversation_id: conversationId
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addMessage('assistant', data.response);
+                    conversationId = data.conversation_id;
+                    await loadStatus();
+                } else {
+                    alert(data.error);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+            }
+        }
+
+        function addMessage(role, content) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            // Format message (basic markdown support)
+            let formattedContent = content
+                .replace(/```(\w+)?\n([\s\S]+?)```/g, '<pre><code>$2</code></pre>')
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                .replace(/\n/g, '<br>');
+            
+            messageDiv.innerHTML = formattedContent;
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        async function showUpgrade() {
+            const response = await fetch('/create-checkout-session', {
+                method: 'POST'
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                window.location.href = data.checkout_url;
+            } else {
+                alert('Error: ' + data.error);
+            }
+        }
+
+        // Enter to send
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('messageInput');
+            if (input) {
+                input.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        sendMessage();
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
